@@ -51,6 +51,10 @@ def compare_intra(
         raise ValueError(
             "compare_intra() requires condition_series " "to be boolean length"
         )
+    if condition_series.isna().any():
+        raise ValueError(
+            "compare_intra() requires condition_series to not contain NaN values"
+        )
 
     data_true = source_df[condition_series]
     data_false = source_df[~condition_series]
