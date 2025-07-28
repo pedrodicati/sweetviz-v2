@@ -54,6 +54,22 @@ class GraphNumeric(sweetviz.graph.Graph):
 
         axs.boxplot(plot_data, vert=False)
 
+        # Add axis labels for clarity
+        axs.set_xlabel("Values")
+        axs.set_ylabel("Data Groups")
+
+        # Format ticks for consistency
+        axs.xaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
+
+        # Handle target overlays if applicable
+        if to_process.is_target():
+            axs.axvline(
+                np.mean(cleaned_source),
+                color="red",
+                linestyle="--",
+                label="Target Mean"
+            )
+            axs.legend()
         self.graph_base64 = self.get_encoded_base64(f)
         plt.close("all")
 
