@@ -1,4 +1,5 @@
 import configparser
+import os
 
 
 try:
@@ -10,7 +11,7 @@ except ImportError:
 
 config = configparser.ConfigParser()
 # print("Config: " + os.path.abspath('sweetviz_defaults.ini'))
-the_open = pkg_resources.open_text("sweetviz", "sweetviz_defaults.ini")
+the_open = pkg_resources.open_text("sweetviz", 'sweetviz_defaults.ini')
 config.read_file(the_open)
 the_open.close()
 # config.read_file(open('sweetviz_defaults.ini'))

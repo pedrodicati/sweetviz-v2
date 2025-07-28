@@ -19,10 +19,8 @@ def do_detail_categorical(to_process: FeatureToProcess, updated_dict: dict):
     if to_process.compare_counts is not None:
         num_values_compare = updated_dict["compare"]["base_stats"]["num_values"].number
 
-    category_counts = utils.get_clamped_value_counts(
-        to_process.source_counts["value_counts_without_nan"],
-        config["Graphs"].getint("detail_graph_max_categories"),
-    )
+    category_counts = utils.get_clamped_value_counts(to_process.source_counts["value_counts_without_nan"], \
+                                   config["Graphs"].getint("detail_graph_max_categories"))
 
     # Iterate through ALL VALUES and get stats
     total_num_compare = 0
@@ -42,30 +40,23 @@ def do_detail_categorical(to_process: FeatureToProcess, updated_dict: dict):
             # TODO: OPTIMIZE: CACHE FROM GRAPH?
             if row["name"] == OTHERS_GROUPED:
                 this_value_target_only = to_process.source_target[
-                    ~to_process.source.isin(category_counts.keys())
-                ]
+                    ~to_process.source.isin(category_counts.keys())]
             else:
-                this_value_target_only = to_process.source_target[
-                    to_process.source == row["name"]
-                ]
+                this_value_target_only = to_process.source_target[to_process.source == row["name"]]
 
             if to_process.predetermined_type_target == FeatureType.TYPE_BOOL:
                 # If value is only present in compared
                 if len(this_value_target_only) > 0:
                     count_this_value_target_only = float(this_value_target_only.count())
                     count_true = this_value_target_only.sum()
-                    row["target_stats"] = NumWithPercent(
-                        count_true, count_this_value_target_only
-                    )
+                    row["target_stats"] = NumWithPercent(count_true, count_this_value_target_only)
                 else:
                     # None will be correctly interpreted by our display, not nan
                     row["target_stats"] = None
             elif to_process.predetermined_type_target == FeatureType.TYPE_NUM:
                 # If value is only present in compared
                 if len(this_value_target_only) > 0:
-                    row["target_stats"] = NumWithPercent(
-                        this_value_target_only.mean(), 1.0
-                    )
+                    row["target_stats"] = NumWithPercent(this_value_target_only.mean(), 1.0)
                     max_abs_value = max(max_abs_value, row["target_stats"].number)
                 else:
                     # None will be correctly interpreted by our display, not nan
@@ -73,47 +64,32 @@ def do_detail_categorical(to_process: FeatureToProcess, updated_dict: dict):
 
         if to_process.compare_counts is not None:
             # HAS COMPARE...
-            if (
-                row["name"]
-                in to_process.compare_counts["value_counts_without_nan"].index
-            ):
+            if row["name"] in to_process.compare_counts["value_counts_without_nan"].index:
                 # ...and value exists in COMPARE
-                matching = to_process.compare_counts["value_counts_without_nan"][
-                    row["name"]
-                ]
+                matching = to_process.compare_counts["value_counts_without_nan"][row["name"]]
                 row["count_compare"] = NumWithPercent(matching, num_values_compare)
 
                 if to_process.compare_target is not None:
                     # TODO: OPTIMIZE: CACHE FROM GRAPH?
                     if row["name"] == OTHERS_GROUPED:
                         this_value_target_only = to_process.compare_target[
-                            ~to_process.compare.isin(category_counts.keys())
-                        ]
+                            ~to_process.compare.isin(category_counts.keys())]
                     else:
-                        this_value_target_only = to_process.compare_target[
-                            to_process.compare == row["name"]
-                        ]
+                        this_value_target_only = to_process.compare_target[to_process.compare == row["name"]]
                     # HAS COMPARE-TARGET
                     if to_process.predetermined_type_target == FeatureType.TYPE_BOOL:
                         if len(this_value_target_only) > 0:
-                            count_this_value_target_only = float(
-                                this_value_target_only.count()
-                            )
+                            count_this_value_target_only = float(this_value_target_only.count())
                             count_true = this_value_target_only.sum()
-                            row["target_stats_compare"] = NumWithPercent(
-                                count_true, count_this_value_target_only
-                            )
+                            row["target_stats_compare"] = NumWithPercent(count_true,
+                                                                         count_this_value_target_only)
                         else:
                             # None will be correctly interpreted by our display, not nan
                             row["target_stats_compare"] = None
                     elif to_process.predetermined_type_target == FeatureType.TYPE_NUM:
                         if len(this_value_target_only) > 0:
-                            row["target_stats_compare"] = NumWithPercent(
-                                this_value_target_only.mean(), 1.0
-                            )
-                            max_abs_value = max(
-                                max_abs_value, row["target_stats_compare"].number
-                            )
+                            row["target_stats_compare"] = NumWithPercent(this_value_target_only.mean(), 1.0)
+                            max_abs_value = max(max_abs_value, row["target_stats_compare"].number)
                         else:
                             # None will be correctly interpreted by our display, not nan
                             row["target_stats_compare"] = None
@@ -138,9 +114,7 @@ def do_detail_categorical(to_process: FeatureToProcess, updated_dict: dict):
             # TODO: OPTIMIZE: CACHE FROM GRAPH?
             count_this_value_target_only = float(to_process.source_target.count())
             count_true = to_process.source_target.sum()
-            row["target_stats"] = NumWithPercent(
-                count_true, count_this_value_target_only
-            )
+            row["target_stats"] = NumWithPercent(count_true, count_this_value_target_only)
         elif to_process.predetermined_type_target == FeatureType.TYPE_NUM:
             # TODO: OPTIMIZE: CACHE FROM GRAPH?
             row["target_stats"] = NumWithPercent(to_process.source_target.mean(), 1.0)
@@ -153,17 +127,12 @@ def do_detail_categorical(to_process: FeatureToProcess, updated_dict: dict):
                 # TODO: OPTIMIZE: CACHE FROM GRAPH?
                 count_this_value_target_only = float(to_process.compare_target.count())
                 count_true = to_process.compare_target.sum()
-                row["target_stats_compare"] = NumWithPercent(
-                    count_true, count_this_value_target_only
-                )
+                row["target_stats_compare"] = NumWithPercent(count_true, count_this_value_target_only)
             elif to_process.predetermined_type_target == FeatureType.TYPE_NUM:
                 # TODO: OPTIMIZE: CACHE FROM GRAPH?
-                row["target_stats_compare"] = NumWithPercent(
-                    to_process.compare_target.mean(), 1.0
-                )
+                row["target_stats_compare"] = NumWithPercent(to_process.compare_target.mean(), 1.0)
     detail["full_count"].append(row)
     return
-
 
 def analyze(to_process: FeatureToProcess, feature_dict: dict):
     compare_dict = feature_dict.get("compare")
@@ -178,12 +147,8 @@ def analyze(to_process: FeatureToProcess, feature_dict: dict):
     feature_dict["detail_graphs"].append(GraphCat("detail", to_process))
 
     if to_process.is_target():
-        feature_dict["html_summary"] = sv_html.generate_html_summary_target_cat(
-            feature_dict, compare_dict
-        )
+        feature_dict["html_summary"] = sv_html.generate_html_summary_target_cat(feature_dict, compare_dict)
     else:
-        feature_dict["html_summary"] = sv_html.generate_html_summary_cat(
-            feature_dict, compare_dict
-        )
+        feature_dict["html_summary"] = sv_html.generate_html_summary_cat(feature_dict, compare_dict)
 
     return

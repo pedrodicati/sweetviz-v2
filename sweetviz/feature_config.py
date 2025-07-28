@@ -4,17 +4,13 @@ from sweetviz.sv_types import FeatureType
 
 
 class FeatureConfig:
-    def __init__(
-        self,
-        skip: Tuple = None,
-        force_cat: Tuple = None,
-        force_text: Tuple = None,
-        force_num: Tuple = None,
-    ):
+    def __init__(self, skip: Tuple = None,
+            force_cat: Tuple = None, force_text: Tuple = None,
+            force_num: Tuple = None):
         def make_list(param):
-            if isinstance(param, (list, tuple)):
+            if type(param) == list or type(param) == tuple:
                 return param
-            elif isinstance(param, str):
+            elif type(param) == str:
                 return [param]
             elif param is None:
                 return list()
