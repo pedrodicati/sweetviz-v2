@@ -16,6 +16,25 @@ class Theme(Enum):
     MODERN_DARK = "modern_dark"
     MODERN_LIGHT = "modern_light"
     CLASSIC = "classic"
+    HIGH_CONTRAST = "high_contrast"
+
+
+class VisualizationEngine(Enum):
+    """Visualization engines for charts"""
+
+    MATPLOTLIB = "matplotlib"
+    PLOTLY = "plotly"
+    AUTO = "auto"  # Use plotly if available, fallback to matplotlib
+
+
+class ExportFormat(Enum):
+    """Available export formats"""
+
+    HTML = "html"
+    JSON = "json"
+    SVG = "svg"
+    PNG = "png"
+    PDF = "pdf"
 
 
 class PerformanceMode(Enum):
@@ -33,6 +52,65 @@ class LLMProvider(Enum):
     ANTHROPIC = "anthropic"
     HUGGINGFACE = "huggingface"
     LOCAL = "local"
+
+
+@dataclass
+class VisualizationConfig:
+    """Configuration for enhanced visualizations"""
+
+    engine: VisualizationEngine = VisualizationEngine.AUTO
+    interactive_charts: bool = True
+    high_dpi: bool = True
+    chart_height: int = 400
+    chart_width: int = 600
+    mobile_responsive: bool = True
+    enable_zoom: bool = True
+    color_palette: Optional[List[str]] = None
+
+    def is_plotly_available(self) -> bool:
+        """Check if plotly is available for enhanced visualizations"""
+        try:
+            import plotly
+
+            return True
+        except ImportError:
+            return False
+
+    def get_effective_engine(self) -> VisualizationEngine:
+        """Get the actual engine to use based on availability"""
+        if self.engine == VisualizationEngine.AUTO:
+            return (
+                VisualizationEngine.PLOTLY
+                if self.is_plotly_available()
+                else VisualizationEngine.MATPLOTLIB
+            )
+        elif (
+            self.engine == VisualizationEngine.PLOTLY and not self.is_plotly_available()
+        ):
+            return VisualizationEngine.MATPLOTLIB
+        return self.engine
+
+
+@dataclass
+class PerformanceConfig:
+    """Configuration for performance optimizations"""
+
+    enable_sampling: bool = True
+    max_sample_size: int = 10000
+    chunk_size: int = 1000
+    parallel_processing: bool = True
+    memory_limit_mb: int = 1024
+    """Configuration for AI-powered features"""
+
+    enabled: bool = False
+    llm_provider: LLMProvider = LLMProvider.OPENAI
+    api_key: Optional[str] = None
+    model_name: Optional[str] = None
+    max_tokens: int = 1000
+    temperature: float = 0.1
+    generate_insights: bool = True
+    anomaly_detection: bool = True
+    smart_correlations: bool = True
 
 
 @dataclass
@@ -75,7 +153,11 @@ class ModernConfig:
     theme: Theme = Theme.DEFAULT
     performance_mode: PerformanceMode = PerformanceMode.BALANCED
     ai_features: AIConfig = field(default_factory=AIConfig)
-    export_formats: List[str] = field(default_factory=lambda: ["html"])
+    visualizations: VisualizationConfig = field(default_factory=VisualizationConfig)
+    performance: PerformanceConfig = field(default_factory=PerformanceConfig)
+    export_formats: List[ExportFormat] = field(
+        default_factory=lambda: [ExportFormat.HTML]
+    )
 
     # Legacy compatibility
     _legacy_config: Optional[configparser.ConfigParser] = None
@@ -126,7 +208,24 @@ class ModernConfig:
                 "anomaly_detection": self.ai_features.anomaly_detection,
                 "smart_correlations": self.ai_features.smart_correlations,
             },
-            "export_formats": self.export_formats,
+            "visualizations": {
+                "engine": self.visualizations.engine.value,
+                "interactive_charts": self.visualizations.interactive_charts,
+                "high_dpi": self.visualizations.high_dpi,
+                "chart_height": self.visualizations.chart_height,
+                "chart_width": self.visualizations.chart_width,
+                "mobile_responsive": self.visualizations.mobile_responsive,
+                "enable_zoom": self.visualizations.enable_zoom,
+                "color_palette": self.visualizations.color_palette,
+            },
+            "performance": {
+                "enable_sampling": self.performance.enable_sampling,
+                "max_sample_size": self.performance.max_sample_size,
+                "chunk_size": self.performance.chunk_size,
+                "parallel_processing": self.performance.parallel_processing,
+                "memory_limit_mb": self.performance.memory_limit_mb,
+            },
+            "export_formats": [fmt.value for fmt in self.export_formats],
         }
 
 

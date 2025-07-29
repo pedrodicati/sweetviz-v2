@@ -27,7 +27,8 @@ class TestModernConfig:
         assert config.theme == Theme.DEFAULT
         assert config.performance_mode == PerformanceMode.BALANCED
         assert not config.ai_features.enabled
-        assert config.export_formats == ["html"]
+        from sweetviz.modern_config import ExportFormat
+        assert config.export_formats == [ExportFormat.HTML]
     
     def test_enable_ai_features(self):
         """Test enabling AI features"""

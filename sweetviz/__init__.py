@@ -20,6 +20,19 @@ from sweetviz.feature_config import FeatureConfig
 from sweetviz.modern_config import ModernConfig, get_config, set_config
 from sweetviz.sv_public import analyze, compare, compare_intra
 
+# Phase 4: Enhanced visualization and export capabilities
+from sweetviz.enhanced_viz import get_enhanced_visualizer
+from sweetviz.enhanced_export import get_enhanced_exporter
+
+# Expose modern config enums for convenience
+from sweetviz.modern_config import (
+    Theme,
+    VisualizationEngine,
+    ExportFormat,
+    PerformanceMode,
+    LLMProvider,
+)
+
 _metadata = metadata("sweetviz")
 __title__ = _metadata["name"]
 __version__ = _metadata["version"]
@@ -37,4 +50,11 @@ __all__ = [
     "get_config",
     "set_config",
     "get_ai_manager",
+    "get_enhanced_visualizer",
+    "get_enhanced_exporter",
+    "Theme",
+    "VisualizationEngine", 
+    "ExportFormat",
+    "PerformanceMode",
+    "LLMProvider",
 ]

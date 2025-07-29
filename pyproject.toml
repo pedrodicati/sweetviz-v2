@@ -68,6 +68,11 @@ ai = [
   "torch >=2.0.0",
   "huggingface-hub >=0.16.0",
 ]
+enhanced = [
+  "plotly >=5.15.0",
+  "kaleido >=0.2.1",
+  "weasyprint >=55.0",
+]
 docs = [
   "sphinx>=4.0",
   "myst_parser>=0.13",
