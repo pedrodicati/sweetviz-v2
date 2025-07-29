@@ -254,7 +254,7 @@ class DataframeReport:
                 )
 
             # Make sure target has no nan's
-            if source_df[targets_found[0]].isnull().values.any():
+            if source_df[targets_found[0]].isnull().any():
                 self.progress_bar.close()
                 raise ValueError(
                     "\nTarget feature '{}' contains NaN (missing) values.\n"
@@ -268,7 +268,7 @@ class DataframeReport:
             compare_target_series = None
             if compare_df is not None:
                 if target_feature_name in compare_df.columns:
-                    if compare_df[target_feature_name].isnull().values.any():
+                    if compare_df[target_feature_name].isnull().any():
                         self.progress_bar.close()
                         raise ValueError(
                             "\nTarget feature '{}' in COMPARED data contains NaN (missing) values.\n"
