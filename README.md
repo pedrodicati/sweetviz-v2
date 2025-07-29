@@ -1,5 +1,31 @@
 ![v](https://img.shields.io/badge/version-2.3.1-blue) ![v](https://img.shields.io/badge/updated-November%2029,%20%202023-green)
 
+### 🚀 LATEST UPDATE - Sweetviz v2 Modernization Project
+
+**NEW in v2 Modernization:**
+- ✅ **Modern Configuration System**: New dataclass-based configuration with AI features support
+- ✅ **AI Integration Foundation**: OpenAI & HuggingFace support for automated insights
+- ✅ **Enhanced Development Tooling**: Black, isort, flake8, pytest, pre-commit hooks
+- ✅ **Comprehensive Testing**: 22+ tests with 57% coverage and CI/CD pipeline  
+- ✅ **Type Hints**: Full type annotations for better IDE support
+- ✅ **Python 3.9-3.12 Support**: Compatible with latest pandas 2.x, numpy 2.x
+- ✅ **Backwards Compatibility**: All existing APIs unchanged
+
+```python
+# New AI-powered features (optional)
+import sweetviz as sv
+
+# Modern configuration
+config = sv.ModernConfig()
+config.enable_ai_features(provider="openai", api_key="your-key")
+sv.set_config(config)
+
+# AI insights (when enabled)
+ai_manager = sv.get_ai_manager()
+summary = ai_manager.generate_data_summary(df)  # Natural language insights
+anomalies = ai_manager.detect_anomalies(df)     # AI-powered anomaly detection
+```
+
 ### UPDATE (November 2023) -  Version 2.3.0: Verbosity parameter added, long-standing issues fixed
 
 ---
