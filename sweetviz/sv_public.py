@@ -38,7 +38,7 @@ def compare_intra(source_df: pd.DataFrame,
                          'to be boolean length')
 
     data_true = source_df[condition_series]
-    data_false = source_df[condition_series == False]
+    data_false = source_df[~condition_series]
     if len(data_false) == 0:
         raise ValueError('compare_intra(): FALSE dataset is empty, nothing to compare!')
     if len(data_true) == 0:
