@@ -10,9 +10,23 @@ def analyze(
     target_feat: str = None,
     feat_cfg: FeatureConfig = None,
     pairwise_analysis: str = "auto",
-):
+    verbosity: str = "default",
+) -> 'sweetviz.dataframe_report.DataframeReport':
+    """
+    Analyze a single dataframe and generate an EDA report.
+    
+    Args:
+        source: Either a DataFrame or tuple of (DataFrame, name_string) 
+        target_feat: Name of the target column for supervised analysis
+        feat_cfg: FeatureConfig object to customize feature handling
+        pairwise_analysis: Control pairwise feature analysis ("auto", "on", "off")
+        verbosity: Control output verbosity ("default", "full", "progress_only", "off")
+        
+    Returns:
+        DataframeReport object containing the analysis results
+    """
     report = sweetviz.DataframeReport(
-        source, target_feat, None, pairwise_analysis, feat_cfg
+        source, target_feat, None, pairwise_analysis, feat_cfg, verbosity
     )
     return report
 
@@ -23,9 +37,24 @@ def compare(
     target_feat: str = None,
     feat_cfg: FeatureConfig = None,
     pairwise_analysis: str = "auto",
-):
+    verbosity: str = "default",
+) -> 'sweetviz.dataframe_report.DataframeReport':
+    """
+    Compare two dataframes and generate an EDA report.
+    
+    Args:
+        source: Source DataFrame or tuple of (DataFrame, name_string)
+        compare: Comparison DataFrame or tuple of (DataFrame, name_string) 
+        target_feat: Name of the target column for supervised analysis
+        feat_cfg: FeatureConfig object to customize feature handling
+        pairwise_analysis: Control pairwise feature analysis ("auto", "on", "off")
+        verbosity: Control output verbosity ("default", "full", "progress_only", "off")
+        
+    Returns:
+        DataframeReport object containing the comparison analysis results
+    """
     report = sweetviz.DataframeReport(
-        source, target_feat, compare, pairwise_analysis, feat_cfg
+        source, target_feat, compare, pairwise_analysis, feat_cfg, verbosity
     )
     return report
 
@@ -37,7 +66,28 @@ def compare_intra(
     target_feat: str = None,
     feat_cfg: FeatureConfig = None,
     pairwise_analysis: str = "auto",
-):
+    verbosity: str = "default",
+) -> 'sweetviz.dataframe_report.DataframeReport':
+    """
+    Compare subsets of the same dataframe based on a boolean condition.
+    
+    Args:
+        source_df: Source DataFrame to split and compare
+        condition_series: Boolean Series defining the split condition
+        names: Tuple of exactly 2 strings naming the (True, False) groups
+        target_feat: Name of the target column for supervised analysis
+        feat_cfg: FeatureConfig object to customize feature handling
+        pairwise_analysis: Control pairwise feature analysis ("auto", "on", "off")
+        verbosity: Control output verbosity ("default", "full", "progress_only", "off")
+        
+    Returns:
+        DataframeReport object containing the intra-comparison analysis results
+        
+    Raises:
+        ValueError: If names parameter is not exactly 2 strings, or if 
+                   condition_series has different index than source_df,
+                   or if condition_series is not boolean or contains NaN values
+    """
     if len(names) != 2:
         raise ValueError(
             'compare_intra() "names" parameter must be a tuple of exactly 2 strings.'
@@ -68,5 +118,6 @@ def compare_intra(
         [data_false, names[1]],
         pairwise_analysis,
         feat_cfg,
+        verbosity,
     )
     return report

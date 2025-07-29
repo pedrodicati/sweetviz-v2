@@ -200,19 +200,23 @@ class GraphAssoc(sweetviz.graph.Graph):
                     graph_data[str(i) + "PAD"] = pd.Series()
                     empty_row_dict[str(i) + "PAD"] = 0.0
 
-            # Add series
+            # Add series using pd.concat instead of deprecated append
+            series_to_concat = []
             for categorical in categoricals:
-                graph_data = graph_data.append(
+                series_to_concat.append(
                     pd.Series(empty_row_dict, name=categorical)
                 )
             if len(categoricals) > len(nums):
                 for i in range(len(nums), len(categoricals)):
-                    graph_data = graph_data.append(
+                    series_to_concat.append(
                         pd.Series(empty_row_dict, name=str(i) + "RPAD")
                     )
+            
+            if series_to_concat:
+                graph_data = pd.concat([graph_data] + series_to_concat, ignore_index=False)
 
             # MUST DROP INDEX GRRRR
-            orig_index = graph_data.index.values
+            orig_index = graph_data.index.to_numpy()
             graph_data.reset_index(drop=True, inplace=True)
 
             for feature in categoricals:

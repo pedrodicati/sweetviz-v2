@@ -54,16 +54,16 @@ def convert(data, to):
         if isinstance(data, np.ndarray):
             converted = data
         elif isinstance(data, pd.Series):
-            converted = data.values
+            converted = data.to_numpy()
         elif isinstance(data, list):
             converted = np.array(data)
         elif isinstance(data, pd.DataFrame):
-            converted = data.as_matrix()
+            converted = data.to_numpy()  # Replace deprecated as_matrix()
     elif to == "list":
         if isinstance(data, list):
             converted = data
         elif isinstance(data, pd.Series):
-            converted = data.values.tolist()
+            converted = data.tolist()
         elif isinstance(data, np.ndarray):
             converted = data.tolist()
     elif to == "dataframe":

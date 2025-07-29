@@ -16,6 +16,9 @@ from sweetviz.dataframe_report import DataframeReport
 # This is the config_parser, use to customize settings
 from sweetviz.config import config as config_parser
 
+# AI insights functionality (new in v2)
+from sweetviz.ai_insights import DataInsightGenerator, SmartDataDetection
+
 _metadata = metadata("sweetviz")
 __title__ = _metadata["name"]
 __version__ = _metadata["version"]
@@ -29,4 +32,6 @@ __all__ = [
     "FeatureConfig",
     "DataframeReport",
     "config_parser",
+    "DataInsightGenerator",
+    "SmartDataDetection",
 ]
