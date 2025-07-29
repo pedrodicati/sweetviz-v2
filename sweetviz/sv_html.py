@@ -1,13 +1,14 @@
-import numpy as np
 import html
+from functools import cmp_to_key
 from operator import itemgetter
+
+import numpy as np
 from jinja2 import Environment, PackageLoader
+
 import sweetviz.sv_html_formatters
 from sweetviz.config import config
-from sweetviz.sv_types import NumWithPercent, FeatureType, OTHERS_GROUPED
-from sweetviz.graph_associations import CORRELATION_ERROR
-from sweetviz.graph_associations import CORRELATION_IDENTICAL
-from functools import cmp_to_key
+from sweetviz.graph_associations import CORRELATION_ERROR, CORRELATION_IDENTICAL
+from sweetviz.sv_types import OTHERS_GROUPED, FeatureType, NumWithPercent
 
 package_loader = PackageLoader("sweetviz", "templates")
 jinja2_env = Environment(lstrip_blocks=True, trim_blocks=True, loader=package_loader)

@@ -1,9 +1,10 @@
 import numpy as np
 import pandas as pd
-from sweetviz.graph_numeric import GraphNumeric
+
 import sweetviz.sv_html as sv_html
-from sweetviz.sv_types import NumWithPercent, FeatureType, FeatureToProcess
 from sweetviz.config import config
+from sweetviz.graph_numeric import GraphNumeric
+from sweetviz.sv_types import FeatureToProcess, FeatureType, NumWithPercent
 
 
 def do_stats_numeric(series: pd.Series, updated_dict: dict):

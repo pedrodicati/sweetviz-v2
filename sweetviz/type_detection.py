@@ -1,11 +1,12 @@
 import pandas as pd
-from sweetviz.sv_types import FeatureType
+
 from sweetviz.from_profiling_pandas import (
-    is_boolean,
-    is_numeric,
-    is_categorical,
     could_be_numeric,
+    is_boolean,
+    is_categorical,
+    is_numeric,
 )
+from sweetviz.sv_types import FeatureType
 
 
 def determine_feature_type(

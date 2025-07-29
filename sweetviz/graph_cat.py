@@ -1,13 +1,13 @@
-import numpy as np
+from typing import List
+
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+import numpy as np
 
-from sweetviz import sv_math
-from sweetviz import utils
-from sweetviz.config import config
-from sweetviz.sv_types import FeatureType, FeatureToProcess, OTHERS_GROUPED
 import sweetviz.graph
-from typing import List
+from sweetviz import sv_math, utils
+from sweetviz.config import config
+from sweetviz.sv_types import OTHERS_GROUPED, FeatureToProcess, FeatureType
 
 
 def plot_grouped_bars(

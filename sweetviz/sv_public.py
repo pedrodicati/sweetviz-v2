@@ -1,4 +1,5 @@
-from typing import Union, List, Tuple
+from typing import List, Optional, Tuple, Union
+
 import pandas as pd
 
 import sweetviz.dataframe_report
@@ -7,10 +8,10 @@ from sweetviz.feature_config import FeatureConfig
 
 def analyze(
     source: Union[pd.DataFrame, Tuple[pd.DataFrame, str]],
-    target_feat: str = None,
-    feat_cfg: FeatureConfig = None,
+    target_feat: Optional[str] = None,
+    feat_cfg: Optional[FeatureConfig] = None,
     pairwise_analysis: str = "auto",
-):
+) -> "sweetviz.dataframe_report.DataframeReport":
     report = sweetviz.DataframeReport(
         source, target_feat, None, pairwise_analysis, feat_cfg
     )
@@ -20,10 +21,10 @@ def analyze(
 def compare(
     source: Union[pd.DataFrame, Tuple[pd.DataFrame, str]],
     compare: Union[pd.DataFrame, Tuple[pd.DataFrame, str]],
-    target_feat: str = None,
-    feat_cfg: FeatureConfig = None,
+    target_feat: Optional[str] = None,
+    feat_cfg: Optional[FeatureConfig] = None,
     pairwise_analysis: str = "auto",
-):
+) -> "sweetviz.dataframe_report.DataframeReport":
     report = sweetviz.DataframeReport(
         source, target_feat, compare, pairwise_analysis, feat_cfg
     )
@@ -34,10 +35,10 @@ def compare_intra(
     source_df: pd.DataFrame,
     condition_series: pd.Series,
     names: Tuple[str, str],
-    target_feat: str = None,
-    feat_cfg: FeatureConfig = None,
+    target_feat: Optional[str] = None,
+    feat_cfg: Optional[FeatureConfig] = None,
     pairwise_analysis: str = "auto",
-):
+) -> "sweetviz.dataframe_report.DataframeReport":
     if len(names) != 2:
         raise ValueError(
             'compare_intra() "names" parameter must be a tuple of exactly 2 strings.'

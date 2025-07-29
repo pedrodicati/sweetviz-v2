@@ -1,23 +1,26 @@
-from typing import Union, List, Tuple
 import os
 import time
+import webbrowser
+from typing import List, Tuple, Union
+
 import pandas as pd
 from numpy import isnan
 from tqdm.auto import tqdm
 
-from sweetviz.sv_types import NumWithPercent, FeatureToProcess, FeatureType
+import sweetviz.comet_ml_logger as comet_ml_logger
 import sweetviz.from_dython as associations
 import sweetviz.series_analyzer as sa
-import sweetviz.utils as su
-from sweetviz.graph_associations import GraphAssoc
-from sweetviz.graph_associations import CORRELATION_ERROR
-from sweetviz.graph_associations import CORRELATION_IDENTICAL
-from sweetviz.graph_legend import GraphLegend
-from sweetviz.config import config
-import sweetviz.comet_ml_logger as comet_ml_logger
 import sweetviz.sv_html as sv_html
+import sweetviz.utils as su
+from sweetviz.config import config
 from sweetviz.feature_config import FeatureConfig
-import webbrowser
+from sweetviz.graph_associations import (
+    CORRELATION_ERROR,
+    CORRELATION_IDENTICAL,
+    GraphAssoc,
+)
+from sweetviz.graph_legend import GraphLegend
+from sweetviz.sv_types import FeatureToProcess, FeatureType, NumWithPercent
 
 
 class DataframeReport:
@@ -822,8 +825,7 @@ class DataframeReport:
 
         self._page_html = html.escape(self._page_html)
         iframe = f' <iframe width="{width}" height="{height}" srcdoc="{self._page_html}" frameborder="0" allowfullscreen></iframe>'
-        from IPython.display import display
-        from IPython.display import HTML
+        from IPython.display import HTML, display
 
         display(HTML(iframe))
 

@@ -1,9 +1,10 @@
 import pandas as pd
-from sweetviz.sv_types import NumWithPercent, FeatureType, FeatureToProcess
-from sweetviz.type_detection import determine_feature_type
-import sweetviz.series_analyzer_numeric
+
 import sweetviz.series_analyzer_cat
+import sweetviz.series_analyzer_numeric
 import sweetviz.series_analyzer_text
+from sweetviz.sv_types import FeatureToProcess, FeatureType, NumWithPercent
+from sweetviz.type_detection import determine_feature_type
 
 
 def get_counts(series: pd.Series) -> dict:

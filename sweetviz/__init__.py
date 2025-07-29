@@ -6,15 +6,19 @@ except ImportError:
     from importlib_metadata import metadata  # Python 3.7
 
 # These are the main API functions
-from sweetviz.sv_public import analyze, compare, compare_intra
-from sweetviz.feature_config import FeatureConfig
+from sweetviz.ai_insights import get_ai_manager
+
+# This is the config_parser, use to customize settings
+from sweetviz.config import config as config_parser
 
 # This is the main report class; holds the report data
 # and is used to output the final report
 from sweetviz.dataframe_report import DataframeReport
+from sweetviz.feature_config import FeatureConfig
 
-# This is the config_parser, use to customize settings
-from sweetviz.config import config as config_parser
+# Modern configuration and AI features
+from sweetviz.modern_config import ModernConfig, get_config, set_config
+from sweetviz.sv_public import analyze, compare, compare_intra
 
 _metadata = metadata("sweetviz")
 __title__ = _metadata["name"]
@@ -29,4 +33,8 @@ __all__ = [
     "FeatureConfig",
     "DataframeReport",
     "config_parser",
+    "ModernConfig",
+    "get_config",
+    "set_config",
+    "get_ai_manager",
 ]

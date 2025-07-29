@@ -1,11 +1,11 @@
-import numpy as np
 import matplotlib
-import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+import numpy as np
 
+import sweetviz.graph
 from sweetviz.config import config
 from sweetviz.sv_types import FeatureType
-import sweetviz.graph
 
 
 class GraphLegend(sweetviz.graph.Graph):

@@ -1,6 +1,8 @@
-from urllib.parse import urlparse
 from pathlib import Path
+from urllib.parse import urlparse
+
 import pandas as pd
+
 from sweetviz.config import config
 
 # This file contains modified functions from the profiling-pandas library,
