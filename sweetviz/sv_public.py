@@ -56,8 +56,8 @@ def compare_intra(
             "compare_intra() requires condition_series to not contain NaN values"
         )
 
-    data_true = source_df[condition_series]
-    data_false = source_df[~condition_series]
+    data_true = source_df[condition_series].reset_index(drop=True)
+    data_false = source_df[~condition_series].reset_index(drop=True)
     if len(data_false) == 0:
         raise ValueError("compare_intra(): FALSE dataset is empty, nothing to compare!")
     if len(data_true) == 0:

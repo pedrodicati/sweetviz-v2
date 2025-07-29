@@ -720,13 +720,7 @@ class DataframeReport:
             )
         self._page_html = sv_html.generate_html_dataframe_page(self)
 
-    def show_html(
-        self,
-        filepath="SWEETVIZ_REPORT.html",
-        open_browser=True,
-        layout="widescreen",
-        scale=None,
-    ):
+    def to_html(self, layout="widescreen", scale=None):
         scale = float(self.use_config_if_none(scale, "html_scale"))
         layout = self.use_config_if_none(layout, "html_layout")
         if layout not in ["widescreen", "vertical"]:
@@ -747,9 +741,19 @@ class DataframeReport:
                 self, "compare"
             )
         self._page_html = sv_html.generate_html_dataframe_page(self)
+        return self._page_html
+
+    def show_html(
+        self,
+        filepath="SWEETVIZ_REPORT.html",
+        open_browser=True,
+        layout="widescreen",
+        scale=None,
+    ):
+        html_to_show = self.to_html(layout, scale)
 
         f = open(filepath, "w", encoding="utf-8")
-        f.write(self._page_html)
+        f.write(html_to_show)
         f.close()
         if open_browser:
             self.verbose_print(

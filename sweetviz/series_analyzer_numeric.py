@@ -26,7 +26,7 @@ def do_stats_numeric(series: pd.Series, updated_dict: dict):
     stats["sum"] = series.sum()
     # MAD was unused!!!
     # stats["mad"] = (series - series.mean()).abs().mean() # deprecated: series.mad()
-    stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.NaN
+    stats["cv"] = stats["std"] / stats["mean"] if stats["mean"] else np.nan
     return updated_dict
 
 
