@@ -17,6 +17,7 @@ from sweetviz.config import config
 import sweetviz.comet_ml_logger as comet_ml_logger
 import sweetviz.sv_html as sv_html
 from sweetviz.feature_config import FeatureConfig
+from sweetviz.ai_insights import DataInsightGenerator, SmartDataDetection
 import webbrowser
 
 
@@ -407,6 +408,10 @@ class DataframeReport:
             self._associations_compare = None
             self.associations_html_source = None
             self.associations_html_compare = None
+        
+        # Generate AI-powered insights
+        self._generate_ai_insights(source_df, target_feature_name)
+        
         self.progress_bar.close()
         return
 
@@ -880,3 +885,89 @@ class DataframeReport:
             experiment.log_html(self._page_html)
         except Exception:
             print("log_comet(): error logging HTML report.")
+
+    def _generate_ai_insights(self, source_df: pd.DataFrame, target_feature_name: str = None):
+        """
+        Generate AI-powered insights for the dataset.
+        
+        Args:
+            source_df: The source DataFrame being analyzed
+            target_feature_name: Optional target column name
+        """
+        try:
+            # Generate AI insights
+            self.verbose_print("Generating AI insights...")
+            insight_generator = DataInsightGenerator(confidence_threshold=0.95)
+            self.ai_insights = insight_generator.generate_insights(source_df, target_feature_name)
+            
+            # Generate semantic type detection
+            smart_detector = SmartDataDetection()
+            self.semantic_types = smart_detector.detect_semantic_types(source_df)
+            
+            # Print key insights if verbosity allows
+            if self.verbosity_level in ["full", "default"]:
+                self._print_ai_insights_summary()
+                
+        except Exception as e:
+            # Don't fail the entire analysis if AI insights fail
+            self.ai_insights = None
+            self.semantic_types = None
+            if self.verbosity_level in ["full", "default"]:
+                print(f"AI insights generation failed: {e}")
+
+    def _print_ai_insights_summary(self):
+        """Print a summary of AI insights to console."""
+        if not self.ai_insights:
+            return
+            
+        print("\n" + "="*60)
+        print("🤖 AI-POWERED INSIGHTS")
+        print("="*60)
+        
+        # Print summary insights
+        summary = self.ai_insights.get('summary', [])
+        for insight in summary:
+            print(f"• {insight}")
+        
+        # Print data quality flags
+        quality_flags = self.ai_insights.get('data_quality', {}).get('quality_flags', [])
+        if quality_flags:
+            print(f"\n⚠️  Data Quality Alerts: {', '.join(quality_flags)}")
+        
+        # Print anomaly detection results
+        anomaly_data = self.ai_insights.get('anomaly_detection', {})
+        iso_forest = anomaly_data.get('isolation_forest', {})
+        if 'anomaly_percentage' in iso_forest:
+            anomaly_pct = iso_forest['anomaly_percentage']
+            if anomaly_pct > 0:
+                print(f"🔍 Anomaly Detection: {anomaly_pct:.1f}% of rows flagged as potential anomalies")
+        
+        # Print semantic type insights
+        if self.semantic_types:
+            interesting_types = []
+            for col, analysis in self.semantic_types.items():
+                if analysis['confidence'] > 0.7 and analysis['semantic_type'] not in ['unknown', 'mostly_null']:
+                    interesting_types.append(f"{col} → {analysis['semantic_type']}")
+            
+            if interesting_types:
+                print(f"🏷️  Semantic Types Detected: {', '.join(interesting_types)}")
+        
+        print("="*60)
+
+    def get_ai_insights(self) -> dict:
+        """
+        Get the AI-generated insights for this report.
+        
+        Returns:
+            Dictionary containing AI insights, or None if generation failed
+        """
+        return getattr(self, 'ai_insights', None)
+
+    def get_semantic_types(self) -> dict:
+        """
+        Get the semantic type analysis for this report.
+        
+        Returns:
+            Dictionary containing semantic type analysis, or None if generation failed
+        """
+        return getattr(self, 'semantic_types', None)

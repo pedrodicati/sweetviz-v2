@@ -46,6 +46,7 @@ dependencies = [
     'jinja2>=3.0.0',
     'importlib_resources>=5.0.0',
     'importlib_metadata;python_version<"3.8"',
+    'scikit-learn>=1.0.0',  # For AI insights and anomaly detection
 ]
 
 [project.optional-dependencies]
