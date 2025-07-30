@@ -39,10 +39,16 @@ from sweetviz.modern_config import (
     LLMProvider,
 )
 
-_metadata = metadata("sweetviz")
-__title__ = _metadata["name"]
-__version__ = _metadata["version"]
-__author__ = _metadata["Author-email"]
+try:
+    _metadata = metadata("sweetviz")
+    __title__ = _metadata["name"]
+    __version__ = _metadata["version"]
+    __author__ = _metadata["Author-email"]
+except Exception:
+    # Fallback for development/testing
+    __title__ = "sweetviz"
+    __version__ = "2.0.0"
+    __author__ = "Francois Bertrand"
 __license__ = "MIT"
 
 __all__ = [
