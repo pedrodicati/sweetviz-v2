@@ -1,6 +1,6 @@
 from enum import Enum, unique
-import pandas as pd
 
+import pandas as pd
 
 # Adding spaces to avoid collisions: this should NEVER be in a dataset :)
 OTHERS_GROUPED = "     (Other)"

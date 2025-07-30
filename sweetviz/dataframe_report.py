@@ -1,23 +1,26 @@
-from typing import Union, List, Tuple
 import os
 import time
+import webbrowser
+from typing import List, Tuple, Union
+
 import pandas as pd
 from numpy import isnan
 from tqdm.auto import tqdm
 
-from sweetviz.sv_types import NumWithPercent, FeatureToProcess, FeatureType
+import sweetviz.comet_ml_logger as comet_ml_logger
 import sweetviz.from_dython as associations
 import sweetviz.series_analyzer as sa
-import sweetviz.utils as su
-from sweetviz.graph_associations import GraphAssoc
-from sweetviz.graph_associations import CORRELATION_ERROR
-from sweetviz.graph_associations import CORRELATION_IDENTICAL
-from sweetviz.graph_legend import GraphLegend
-from sweetviz.config import config
-import sweetviz.comet_ml_logger as comet_ml_logger
 import sweetviz.sv_html as sv_html
+import sweetviz.utils as su
+from sweetviz.config import config
 from sweetviz.feature_config import FeatureConfig
-import webbrowser
+from sweetviz.graph_associations import (
+    CORRELATION_ERROR,
+    CORRELATION_IDENTICAL,
+    GraphAssoc,
+)
+from sweetviz.graph_legend import GraphLegend
+from sweetviz.sv_types import FeatureToProcess, FeatureType, NumWithPercent
 
 
 class DataframeReport:
@@ -822,8 +825,7 @@ class DataframeReport:
 
         self._page_html = html.escape(self._page_html)
         iframe = f' <iframe width="{width}" height="{height}" srcdoc="{self._page_html}" frameborder="0" allowfullscreen></iframe>'
-        from IPython.display import display
-        from IPython.display import HTML
+        from IPython.display import HTML, display
 
         display(HTML(iframe))
 
@@ -880,3 +882,173 @@ class DataframeReport:
             experiment.log_html(self._page_html)
         except Exception:
             print("log_comet(): error logging HTML report.")
+
+    def to_mlflow(
+        self, 
+        experiment_name: str = None,
+        tags: dict = None
+    ) -> dict:
+        """
+        Export report data to MLflow experiment tracking.
+        
+        Args:
+            experiment_name: Name of the MLflow experiment (optional)
+            tags: Dictionary of tags to add to the run (optional)
+            
+        Returns:
+            Dictionary with export results or error information
+        """
+        try:
+            from sweetviz.mlops_integrations import get_mlops_manager
+            
+            # Extract structured data for MLOps export
+            report_data = self._extract_report_data()
+            
+            # Export to MLflow
+            mlops_manager = get_mlops_manager()
+            return mlops_manager.export_to_mlflow(report_data, experiment_name, tags)
+            
+        except ImportError:
+            return {"error": "MLOps integrations not available"}
+        except Exception as e:
+            return {"error": f"MLflow export failed: {str(e)}"}
+
+    def to_wandb(
+        self, 
+        experiment_name: str = None,
+        tags: dict = None
+    ) -> dict:
+        """
+        Export report data to Weights & Biases experiment tracking.
+        
+        Args:
+            experiment_name: Name of the W&B run (optional)
+            tags: Dictionary of tags to add to the run (optional)
+            
+        Returns:
+            Dictionary with export results or error information
+        """
+        try:
+            from sweetviz.mlops_integrations import get_mlops_manager
+            
+            # Extract structured data for MLOps export
+            report_data = self._extract_report_data()
+            
+            # Export to Weights & Biases
+            mlops_manager = get_mlops_manager()
+            return mlops_manager.export_to_wandb(report_data, experiment_name, tags)
+            
+        except ImportError:
+            return {"error": "MLOps integrations not available"}
+        except Exception as e:
+            return {"error": f"Weights & Biases export failed: {str(e)}"}
+
+    def _extract_report_data(self) -> dict:
+        """
+        Extract structured data from the report for MLOps export.
+        
+        Returns:
+            Dictionary containing structured report data
+        """
+        # Get basic info from summary_source
+        rows = self.summary_source.get("num_rows", 0) if hasattr(self, 'summary_source') else 0
+        cols = self.summary_source.get("num_columns", 0) if hasattr(self, 'summary_source') else 0
+        
+        report_data = {
+            "dataset_info": {
+                "shape": (rows, cols),
+                "num_columns": len(self._features) if hasattr(self, '_features') else 0,
+                "missing_values": 0,
+                "data_types": {},
+                "memory_usage_mb": 0
+            },
+            "summary_stats": {},
+            "feature_analysis": {},
+            "correlations": {},
+            "metadata": {
+                "generation_time": time.time(),
+                "sweetviz_version": "2.3.1",
+                "report_type": "compare" if hasattr(self, 'compare_name') and self.compare_name else "analyze"
+            }
+        }
+
+        # Extract feature analysis from _features
+        if hasattr(self, '_features') and self._features:
+            total_missing = 0
+            
+            for feat_name, feat_info in self._features.items():
+                feature_data = {
+                    "type": str(feat_info.get('type', 'unknown')),
+                    "missing_count": feat_info.get('missing_count', 0),
+                    "unique_count": feat_info.get('unique_count', 0),
+                }
+                
+                # Add missing to total
+                total_missing += feature_data["missing_count"]
+                
+                # Add type-specific statistics
+                if 'stats' in feat_info:
+                    stats = feat_info['stats']
+                    if feat_info.get('type') == 'Numeric':
+                        feature_data.update({
+                            "mean": stats.get('mean', None),
+                            "std": stats.get('std', None),
+                            "min": stats.get('min', None),
+                            "max": stats.get('max', None),
+                            "median": stats.get('median', None),
+                        })
+                    elif feat_info.get('type') == 'Categorical':
+                        feature_data.update({
+                            "most_frequent": stats.get('mode', None),
+                            "frequency": stats.get('mode_freq', None),
+                        })
+                
+                report_data["feature_analysis"][feat_name] = feature_data
+
+            # Update missing values count
+            report_data["dataset_info"]["missing_values"] = total_missing
+
+        # Extract data type information from summary_source
+        if hasattr(self, 'summary_source') and self.summary_source:
+            # Count data types from features
+            type_counts = {}
+            for feat_info in self._features.values():
+                feat_type = feat_info.get('type', 'unknown')
+                type_counts[feat_type] = type_counts.get(feat_type, 0) + 1
+            
+            report_data["dataset_info"]["data_types"] = type_counts
+
+        # Extract correlation data if available
+        if hasattr(self, '_association_graphs') and self._association_graphs:
+            for graph_key, graph in self._association_graphs.items():
+                if hasattr(graph, 'associations_list'):
+                    for assoc in graph.associations_list:
+                        if hasattr(assoc, 'pair_name') and hasattr(assoc, 'value'):
+                            if not isnan(assoc.value):
+                                report_data["correlations"][assoc.pair_name] = float(assoc.value)
+
+        # Calculate summary statistics
+        if hasattr(self, '_features') and self._features:
+            total_features = len(self._features)
+            numeric_features = sum(
+                1 for f in self._features.values() 
+                if f.get('type') == 'Numeric'
+            )
+            categorical_features = sum(
+                1 for f in self._features.values() 
+                if f.get('type') == 'Categorical'
+            )
+            
+            total_cells = rows * cols if rows and cols else 1
+            missing_percentage = (report_data["dataset_info"]["missing_values"] / total_cells * 100) if total_cells > 0 else 0
+            
+            report_data["summary_stats"] = {
+                "total_features": total_features,
+                "numeric_features": numeric_features,
+                "categorical_features": categorical_features,
+                "text_features": total_features - numeric_features - categorical_features,
+                "total_missing_values": report_data["dataset_info"]["missing_values"],
+                "missing_percentage": missing_percentage
+            }
+
+        return report_data

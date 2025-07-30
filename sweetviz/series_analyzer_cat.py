@@ -1,9 +1,13 @@
-from sweetviz.config import config
-from sweetviz.sv_types import NumWithPercent, FeatureType, FeatureToProcess
-from sweetviz.graph_cat import GraphCat
 import sweetviz.sv_html as sv_html
 import sweetviz.utils as utils
-from sweetviz.sv_types import OTHERS_GROUPED
+from sweetviz.config import config
+from sweetviz.graph_cat import GraphCat
+from sweetviz.sv_types import (
+    OTHERS_GROUPED,
+    FeatureToProcess,
+    FeatureType,
+    NumWithPercent,
+)
 
 
 def do_detail_categorical(to_process: FeatureToProcess, updated_dict: dict):

@@ -1,10 +1,10 @@
-import matplotlib
-import os.path
-
-import matplotlib.pyplot as plt
-import matplotlib.font_manager as fm
-from io import BytesIO
 import base64
+import os.path
+from io import BytesIO
+
+import matplotlib
+import matplotlib.font_manager as fm
+import matplotlib.pyplot as plt
 from importlib_resources import files
 from pandas.plotting import register_matplotlib_converters
 

@@ -1,13 +1,14 @@
+import itertools
 import math
+
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from sweetviz.sv_types import FeatureType
+
 import sweetviz.graph
 from sweetviz.config import config
-import itertools
-import matplotlib.patches as patches
-
+from sweetviz.sv_types import FeatureType
 
 # Portions of this file contain code from the following repository:
 # https://github.com/dylan-profiler/heatmaps

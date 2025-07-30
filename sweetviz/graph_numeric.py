@@ -1,12 +1,12 @@
-import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+import numpy as np
+import pandas as pd
 
-from sweetviz.config import config
-from sweetviz import sv_html_formatters
-from sweetviz.sv_types import FeatureType, FeatureToProcess
 import sweetviz.graph
+from sweetviz import sv_html_formatters
+from sweetviz.config import config
+from sweetviz.sv_types import FeatureToProcess, FeatureType
 
 
 class GraphNumeric(sweetviz.graph.Graph):
@@ -59,7 +59,7 @@ class GraphNumeric(sweetviz.graph.Graph):
         axs.set_ylabel("Data Groups")
 
         # Format ticks for consistency
-        axs.xaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
+        axs.xaxis.set_major_formatter(mtick.FormatStrFormatter("%.2f"))
 
         # Handle target overlays if applicable
         if to_process.is_target():
@@ -67,7 +67,7 @@ class GraphNumeric(sweetviz.graph.Graph):
                 np.mean(cleaned_source),
                 color="red",
                 linestyle="--",
-                label="Target Mean"
+                label="Target Mean",
             )
             axs.legend()
         self.graph_base64 = self.get_encoded_base64(f)

@@ -1,7 +1,8 @@
 from decimal import Decimal
+
 import numpy as np
-from sweetviz.graph_associations import CORRELATION_ERROR
-from sweetviz.graph_associations import CORRELATION_IDENTICAL
+
+from sweetviz.graph_associations import CORRELATION_ERROR, CORRELATION_IDENTICAL
 
 
 def fmt_int_commas(value: float) -> str:

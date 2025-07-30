@@ -1,6 +1,7 @@
 import html
+
 import sweetviz.sv_html as sv_html
-from sweetviz.sv_types import NumWithPercent, FeatureToProcess
+from sweetviz.sv_types import FeatureToProcess, NumWithPercent
 
 
 def do_detail_text(to_process: FeatureToProcess, updated_dict: dict):

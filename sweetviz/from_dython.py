@@ -1,7 +1,8 @@
+import math
+from collections import Counter
+
 import numpy as np
 import pandas as pd
-from collections import Counter
-import math
 import scipy.stats as ss
 
 # This file contains original and modified versions of the dython library,

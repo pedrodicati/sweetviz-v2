@@ -56,6 +56,26 @@ test = [
 dev = [
   "pytest >=6",
   "pytest-cov >=3",
+  "black >=24.0.0",
+  "isort >=5.13.0",
+  "flake8 >=7.0.0",
+  "mypy >=1.8.0",
+  "pre-commit >=3.0.0",
+]
+ai = [
+  "openai >=1.0.0",
+  "transformers >=4.30.0",
+  "torch >=2.0.0",
+  "huggingface-hub >=0.16.0",
+]
+enhanced = [
+  "plotly >=5.15.0",
+  "kaleido >=0.2.1",
+  "weasyprint >=55.0",
+]
+mlops = [
+  "mlflow >=2.5.0",
+  "wandb >=0.15.0",
 ]
 docs = [
   "sphinx>=4.0",
@@ -71,3 +91,50 @@ Homepage = "https://github.com/fbdesignpro/sweetviz"
 "Bug Tracker" = "https://github.com/fbdesignpro/sweetviz/issues"
 Discussions = "https://github.com/fbdesignpro/sweetviz/discussions"
 Changelog = "https://github.com/fbdesignpro/sweetviz/releases"
+
+[tool.black]
+line-length = 88
+target-version = ['py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+no_implicit_optional = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --cov=sweetviz --cov-report=term-missing"
+testpaths = [
+    "tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
