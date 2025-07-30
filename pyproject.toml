@@ -73,6 +73,10 @@ enhanced = [
   "kaleido >=0.2.1",
   "weasyprint >=55.0",
 ]
+mlops = [
+  "mlflow >=2.5.0",
+  "wandb >=0.15.0",
+]
 docs = [
   "sphinx>=4.0",
   "myst_parser>=0.13",

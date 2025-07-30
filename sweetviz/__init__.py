@@ -8,6 +8,12 @@ except ImportError:
 # These are the main API functions
 from sweetviz.ai_insights import get_ai_manager
 
+# Phase 5: MLOps platform integrations
+from sweetviz.mlops_integrations import get_mlops_manager
+
+# Phase 5: Natural language query interface
+from sweetviz.nl_query import ask_question, get_query_suggestions, get_nl_query_interface
+
 # This is the config_parser, use to customize settings
 from sweetviz.config import config as config_parser
 
@@ -52,6 +58,10 @@ __all__ = [
     "get_ai_manager",
     "get_enhanced_visualizer",
     "get_enhanced_exporter",
+    "get_mlops_manager",
+    "ask_question",
+    "get_query_suggestions",
+    "get_nl_query_interface",
     "Theme",
     "VisualizationEngine", 
     "ExportFormat",
